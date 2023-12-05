@@ -178,7 +178,7 @@ let option = {
       saveAsImage: { type: "png", name: "fractal1" },
     },
   },
-  legend: legend,
+  legend,  // legend defined above
 
   xAxis: {
     scale: true,
