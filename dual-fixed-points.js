@@ -1,8 +1,8 @@
 import * as echarts from "echarts/core";
 import { ScatterChart } from "echarts/charts";
-import { ToolboxComponent } from "echarts/components";
+import { ToolboxComponent, LegendComponent } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
-echarts.use([ScatterChart, CanvasRenderer, ToolboxComponent]);
+echarts.use([ScatterChart, CanvasRenderer, ToolboxComponent, LegendComponent]);
 
 import { complex, add, pow, multiply } from "mathjs"; // use for complex operations
 import {
@@ -138,9 +138,39 @@ const myChart = echarts.init(document.getElementById("jxgbox"), null, {
 let series = []; // define the series of the 3 fractals for options
 
 // series[0] = { type: "scatter", symbol: "circle", symbolSize: 6, data: fractal };
+
+
+// let dataset= {
+//   // Provide a set of data.
+//   source: [
+//     ['product', fractals[1]],
+//     ['Matcha Latte', fractals[1]],
+//     ['Milk Tea', fractals[1]],
+//     ['Cheese Cocoa', fractals[1]],
+//     ['Walnut Brownie', fractals[1]]
+//   ]
+// }
+
+
+// series = fractals.map((f) => {
+//   return {type: "scatter", symbolSize: 6}
+// });
+
 series = fractals.map((f) => {
-  return { type: "scatter", symbol: "circle", symbolSize: 6, data: f };
+  return { data: f, type: "scatter", symbol: "circle", symbolSize: 6}
 });
+
+let legend= {
+  data: ['Posiivo 1', 'positivo 2', 'positivo 3', 'negativo 1', 'negativo 2',  'negativo 3'],
+  backgroundColor: '#ccc',
+  textStyle: {
+    color: 'black'
+    // ...
+  }}
+
+  series = fractals.map((f, idx) => {
+    return { data: f, name:  legend.data[idx], type: "scatter", symbol: "circle", symbolSize: 6}
+  });
 
 let option = {
   toolbox: {
@@ -148,6 +178,7 @@ let option = {
       saveAsImage: { type: "png", name: "fractal1" },
     },
   },
+  legend: legend,
 
   xAxis: {
     scale: true,
