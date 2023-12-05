@@ -1,0 +1,17 @@
+
+$color: blue;
+$bg: lightgray;
+
+body {
+color: $color;
+background: $bg;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+}
+
+#wrapper {
+    margin: 0 auto;
+}
