@@ -4,7 +4,7 @@ import { ToolboxComponent, LegendComponent } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
 echarts.use([ScatterChart, CanvasRenderer, ToolboxComponent, LegendComponent]);
 
-import { complex, add, pow, multiply } from "mathjs"; // use for complex operations
+import { complex, add, pow, multiply, norm } from "mathjs"; // use for complex operations
 import {
   EigenvalueDecomposition,
   //WrapperMatrix2D,
@@ -40,9 +40,12 @@ let positiveFixed = [
   [0, 6, 0, 8],
 ];
 
+let N = 6; //   3 positive and 3 negative periodic sequences
+
+// why calculations becomes instable for maxIter > 10 ?
+
 let numberOfLetters = substitutions.length;
 let n = numberOfLetters;
-let N = 6;
 
 const counts = (array, letter) =>
   array.reduce((p, c) => {
@@ -77,13 +80,14 @@ let beta1 = eigvInfo.imaginaryEigenvalues[eigVectorIndex]; // real and imaginary
 let beta2 = eigvInfo.realEigenvalues[eigVectorIndex];
 
 let beta = complex(beta1, beta2);
-let normaliz = pow(beta, -maxIter);
+let normaliz = pow(beta, -maxIter); // normalized the sums....
+
+console.log("normaliz = ", normaliz.toString());
 
 console.table(eigvInfo.diagonalMatrix.data); //eigvInfo.diagonalMatrix.data
 
 // for some reason we will use this positions for the eigenvector....
 
-//eigvIndex = numberOfLetters-1
 let gamma_real = eigvInfo.eigenvectorMatrix.transpose().to2DArray()[
   eigVectorIndex
 ];
@@ -104,7 +108,8 @@ function iterate(letter) {
     i = s(i);
     count++;
   }
-  return i; // i is an array here
+  console.log("W length =", i.length);
+  return i; // i=[] is an array here
 }
 
 // create sigma^n(i) for all i
@@ -112,14 +117,14 @@ function iterate(letter) {
 let words = [...Array(N).keys()].map((i) => iterate(positiveFixed[i])); //.reverse()); // n= numberOfLetters
 
 for (let i = 3; i < N; i++) {
-  words[i] = words[i].reverse();
+  words[i] = words[i].reverse(); // reverse the sequences associated to negative sequences
 }
 
 let fractals = [...Array(N)].map((x) => []);
 
 fractals = words.map((x, idx) => {
   // sums all elements over x=words[i] for all i
-  let signal = idx % N > 2 ? -1 : 1;
+  let signal = idx % N > 2 ? -1 : 1; // if index > 2 multiply by -1 the vector gamma
 
   let sums = [];
   x.reduce((p, c) => {
@@ -139,7 +144,6 @@ let series = []; // define the series of the 3 fractals for options
 
 // series[0] = { type: "scatter", symbol: "circle", symbolSize: 6, data: fractal };
 
-
 // let dataset= {
 //   // Provide a set of data.
 //   source: [
@@ -151,26 +155,32 @@ let series = []; // define the series of the 3 fractals for options
 //   ]
 // }
 
-
 // series = fractals.map((f) => {
 //   return {type: "scatter", symbolSize: 6}
 // });
 
 series = fractals.map((f) => {
-  return { data: f, type: "scatter", symbol: "circle", symbolSize: 6}
+  return { data: f, type: "scatter", symbol: "circle", symbolSize: 6 };
 });
 
-let legend= {
-  data: ['Posiivo 1', 'positivo 2', 'positivo 3', 'negativo 1', 'negativo 2',  'negativo 3'],
-  backgroundColor: '#ccc',
+let legend = {
+  data: ["Pos 1", "Pos 2", "Pos 3", "Neg 1", "Neg 2", "Neg 3"],
+  backgroundColor: "#ccc",
   textStyle: {
-    color: 'black'
+    color: "black",
     // ...
-  }}
+  },
+};
 
-  series = fractals.map((f, idx) => {
-    return { data: f, name:  legend.data[idx], type: "scatter", symbol: "circle", symbolSize: 6}
-  });
+series = fractals.map((f, idx) => {
+  return {
+    data: f,
+    name: legend.data[idx],
+    type: "scatter",
+    symbol: "circle",
+    symbolSize: 6,
+  };
+});
 
 let option = {
   toolbox: {
@@ -178,7 +188,7 @@ let option = {
       saveAsImage: { type: "png", name: "fractal1" },
     },
   },
-  legend,  // legend defined above
+  legend, // legend defined above
 
   xAxis: {
     scale: true,
