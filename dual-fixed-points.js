@@ -15,7 +15,7 @@ import "./styles/style.scss";
 
 //*************************************************************************************************************//
 
-let maxIter = 10;
+let maxIter = 9;
 
 let substitutions = [
   // Rauzy with 9 letters as Bressaud's paper
