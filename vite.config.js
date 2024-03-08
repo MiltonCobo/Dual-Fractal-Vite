@@ -1,4 +1,11 @@
-export default {
+
+import { defineConfig } from "vite";
+
+
+export default defineConfig ({
+  optimizeDeps: {
+    exclude: ['js-big-decimal']
+  },
   server: {
     port: 3000,
     open: true,
@@ -13,4 +20,6 @@ export default {
       },
     ],
   },
-};
+});
+
+
