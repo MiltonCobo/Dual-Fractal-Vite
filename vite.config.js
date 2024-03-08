@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 
 
 export default defineConfig ({
+  name: 'Dual-Fractal-Vite',
   optimizeDeps: {
     exclude: ['js-big-decimal']
   },
