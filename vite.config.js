@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig ({
   name: 'Dual-Fractal-Vite',
+  // "homepage": "miltoncobo.github.io",
   optimizeDeps: {
     exclude: ['js-big-decimal']
   },
